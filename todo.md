@@ -1,7 +1,6 @@
-
-
-- accessibility dom
-- css selector
-- xpath expression 
-
-- pip install -r requirements.txt
+- kiss
+- dry
+- yagni
+- damp
+- solid
+- aaa
