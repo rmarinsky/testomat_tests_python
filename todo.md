@@ -1,6 +1,3 @@
-- kiss
-- dry
-- yagni
-- damp
-- solid
-- aaa
+- fixture login
+- dataclass
+- faker
