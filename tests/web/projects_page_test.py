@@ -1,18 +1,7 @@
-import pytest
 from playwright.sync_api import Page
 
 from src.web.components.ProjectCard import Badges
-from src.web.pages.LoginPage import LoginPage
 from src.web.pages.ProjectsPage import ProjectsPage
-from tests.conftest import Config
-
-
-@pytest.fixture(scope="function")
-def login(page: Page, configs: Config):
-    login_page = LoginPage(page)
-    login_page.open()
-    login_page.is_loaded()
-    login_page.login(configs.email, configs.password)
 
 
 def test_projects_page_header(page: Page, login):
