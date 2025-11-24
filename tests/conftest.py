@@ -5,7 +5,7 @@ import pytest
 from dotenv import load_dotenv
 from playwright.sync_api import Page
 
-from src.web.pages.LoginPage import LoginPage
+from src.web.Application import Application
 
 load_dotenv()
 
@@ -29,8 +29,12 @@ def configs():
 
 
 @pytest.fixture(scope="function")
-def login(page: Page, configs: Config):
-    login_page = LoginPage(page)
-    login_page.open()
-    login_page.is_loaded()
-    login_page.login(configs.email, configs.password)
+def app(page: Page) -> Application:
+    return Application(page)
+
+
+@pytest.fixture(scope="function")
+def login(app: Application, configs: Config):
+    app.login_page.open()
+    app.login_page.is_loaded()
+    app.login_page.login(configs.email, configs.password)

@@ -1,5 +1,2 @@
-- string, f string; strip, lower, upper; startwith, endwith; split, join; removeprefix, sufix
-- int, float; operations; math; string to number
-- boolean
-- functions, arsg and return type
-- class
+- adapter, composition/aggregation
+- mother object
