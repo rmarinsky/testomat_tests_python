@@ -1,10 +1,9 @@
 from faker import Faker
-from playwright.sync_api import Page
 
 from src.web.Application import Application
 
 
-def test_new_project_creation(page: Page, login, app: Application):
+def test_new_project_creation_and_test_popup(login, app: Application):
     target_project_name = Faker().company()
 
     (app.new_projects_page
@@ -13,12 +12,18 @@ def test_new_project_creation(page: Page, login, app: Application):
      .fill_project_title(target_project_name)
      .click_create())
 
-    (app.project_page
+    project_page = app.project_page
+    (project_page
      .is_loaded()
      .empty_project_name_is(target_project_name)
      .close_read_me())
 
-    (app.project_page.side_bar
+    (project_page.side_bar
      .is_loaded()
      .click_logo()
      .expect_tab_active("Tests"))
+
+    target_suite_name = Faker().company()
+    project_page.create_first_suite(target_suite_name)
+    project_page.create_test()
+    app.page.pause()

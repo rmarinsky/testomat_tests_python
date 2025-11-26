@@ -23,3 +23,16 @@ class ProjectPage:
 
     def close_read_me(self) -> Self:
         self.page.locator(".back .third-btn").click()
+
+    def create_test(self):
+        self.page.get_by_role("button", name="Test  ").click()
+
+        expect(self.page.get_by_text("Select suite for test")).to_be_visible()
+        return self
+
+    def create_first_suite(self, target_suite_name: str):
+        self.page.locator("[placeholder='First Suite']").fill(target_suite_name)
+        suite_button = self.page.get_by_role("button", name="Suite")
+        suite_button.click()
+        expect(suite_button).to_be_hidden()
+        return self

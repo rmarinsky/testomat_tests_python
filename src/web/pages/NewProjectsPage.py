@@ -16,10 +16,14 @@ class NewProjectsPage:
 
     def is_loaded(self) -> Self:
         expect(self.__form_container).to_be_visible()
-        expect(self.__form_container.locator("#classical")).to_be_visible()
-        expect(self.__form_container.locator("#classical")).to_contain_text("Classical")
-        expect(self.__form_container.locator("#bdd")).to_be_visible()
-        expect(self.__form_container.locator("#bdd")).to_contain_text("BDD")
+        project_label_classical = self.__form_container.locator("#classical")
+        expect(project_label_classical).to_be_visible()
+        expect(project_label_classical).to_contain_text("Classical")
+
+        project_label_bdd = self.__form_container.locator("#bdd")
+        expect(project_label_bdd).to_be_visible()
+        expect(project_label_bdd).to_contain_text("BDD")
+
         expect(self.__form_container.locator("#project_title")).to_be_visible()
         expect(self.__form_container.locator("#demo-btn")).to_be_visible()
         expect(self.__form_container.locator("#project-create-btn")).to_be_visible()

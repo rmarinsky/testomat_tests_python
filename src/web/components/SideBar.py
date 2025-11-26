@@ -37,7 +37,6 @@ class SideBar:
         expect(self._menu).to_be_visible()
         expect(self._logo).to_be_visible()
         expect(self._projects_link).to_be_visible()
-        # expect(self._tests_link).to_be_visible()
         return self
 
     # Navigation methods - Fluent interface
