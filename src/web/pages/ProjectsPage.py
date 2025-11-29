@@ -19,9 +19,8 @@ class ProjectsPage:
 
         self.total_count = page.locator('.common-counter')
 
-    def navigate(self, url: str = '/projects'):
+    def open(self, url: str = '/projects'):
         self.page.goto(url)
-        self.page.wait_for_load_state('networkidle')
 
     def get_success_message(self) -> str:
         return self.success_message.text_content().strip()

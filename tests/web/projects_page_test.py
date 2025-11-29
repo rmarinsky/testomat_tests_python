@@ -4,7 +4,7 @@ from src.web.components.ProjectCard import Badges
 
 def test_projects_page_header(app: Application, login):
     """Test page header functionality"""
-    app.projects_page.navigate()
+    app.projects_page.open()
 
     app.projects_page.verify_page_loaded()
 
