@@ -23,6 +23,7 @@ class ProjectPage:
 
     def close_read_me(self) -> Self:
         self.page.locator(".back .third-btn").click()
+        return self
 
     def create_test(self):
         self.page.get_by_role("button", name="Test  ").click()

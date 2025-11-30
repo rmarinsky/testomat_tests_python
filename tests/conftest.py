@@ -32,10 +32,10 @@ def configs():
 def browser_type_launch_args(browser_type_launch_args: dict) -> dict:
     return {
         **browser_type_launch_args,
+        # "channel": "chrome",
         "headless": False,
-        "slow_mo": 1000,
+        "slow_mo": 0,
         "timeout": 30000,
-        "traces_dir": "test-result/traces/",
     }
 
 
@@ -43,10 +43,11 @@ def browser_type_launch_args(browser_type_launch_args: dict) -> dict:
 def browser_context_args(browser_context_args: dict) -> dict:
     return {
         **browser_context_args,
+        "base_url": "https://app.testomat.io",
         "viewport": {"width": 1920, "height": 1080},
         "locale": "uk-UA",
         "timezone_id": "Europe/Kyiv",
-        "record_video_dir": "videos/",
+        "record_video_dir": "test-result/videos/",
         "permissions": ["geolocation"],
     }
 
