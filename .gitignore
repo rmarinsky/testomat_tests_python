@@ -6,6 +6,6 @@
 !.idea/*.iml
 !.idea/modules.xml
 
-.env
+.env*
 .venv
 test-result
