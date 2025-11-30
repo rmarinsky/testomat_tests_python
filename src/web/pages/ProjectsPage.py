@@ -52,4 +52,3 @@ class ProjectsPage:
 
     def get_demo_projects(self) -> List[ProjectCard]:
         return [project for project in self.get_projects() if project.is_demo_project()]
-

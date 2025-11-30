@@ -6,16 +6,16 @@ from src.web.Application import Application
 
 @pytest.mark.regression
 @pytest.mark.web
-def test_new_project_creation_and_test_popup(login, app: Application):
+def test_new_project_creation_and_test_popup(logged_app: Application):
     target_project_name = Faker().company()
 
-    (app.new_projects_page
+    (logged_app.new_projects_page
      .open()
      .is_loaded()
      .fill_project_title(target_project_name)
      .click_create())
 
-    project_page = app.project_page
+    project_page = logged_app.project_page
     (project_page
      .is_loaded()
      .empty_project_name_is(target_project_name)
