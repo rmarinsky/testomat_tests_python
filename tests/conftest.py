@@ -28,6 +28,29 @@ def configs():
     )
 
 
+@pytest.fixture(scope="session")
+def browser_type_launch_args(browser_type_launch_args: dict) -> dict:
+    return {
+        **browser_type_launch_args,
+        "headless": False,
+        "slow_mo": 1000,
+        "timeout": 30000,
+        "traces_dir": "test-result/traces/",
+    }
+
+
+@pytest.fixture(scope="session")
+def browser_context_args(browser_context_args: dict) -> dict:
+    return {
+        **browser_context_args,
+        "viewport": {"width": 1920, "height": 1080},
+        "locale": "uk-UA",
+        "timezone_id": "Europe/Kyiv",
+        "record_video_dir": "videos/",
+        "permissions": ["geolocation"],
+    }
+
+
 @pytest.fixture(scope="function")
 def app(page: Page) -> Application:
     return Application(page)

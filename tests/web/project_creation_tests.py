@@ -1,8 +1,11 @@
+import pytest
 from faker import Faker
 
 from src.web.Application import Application
 
 
+@pytest.mark.regression
+@pytest.mark.web
 def test_new_project_creation_and_test_popup(login, app: Application):
     target_project_name = Faker().company()
 
@@ -26,4 +29,3 @@ def test_new_project_creation_and_test_popup(login, app: Application):
     target_suite_name = Faker().company()
     project_page.create_first_suite(target_suite_name)
     project_page.create_test()
-    app.page.pause()

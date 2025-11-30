@@ -43,7 +43,7 @@ class ProjectsPage:
         self.page.wait_for_timeout(300)
         return self.get_projects()
 
-    def verify_page_loaded(self):
+    def is_loaded(self):
         expect(self.header.page_title).to_be_visible()
         expect(self.projects_grid).to_be_visible()
 
@@ -53,8 +53,3 @@ class ProjectsPage:
     def get_demo_projects(self) -> List[ProjectCard]:
         return [project for project in self.get_projects() if project.is_demo_project()]
 
-    def is_loaded(self):
-        expect(self.page.locator(".common-flash-success")).to_be_visible()
-        expect(self.page.locator(".common-flash-success")).to_have_text("Signed in successfully")
-
-        expect(self.page.locator(".common-flash-success", has_text="Signed in successfully")).to_be_visible()

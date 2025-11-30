@@ -1,2 +1,3 @@
-- adapter, composition/aggregation
-- mother object
+- playwright configurations
+- Tracing, screenshots
+- Debugging та аналіз помилок

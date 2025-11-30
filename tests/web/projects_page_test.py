@@ -1,12 +1,16 @@
+import pytest
+
 from src.web.Application import Application
 from src.web.components.ProjectCard import Badges
 
 
+@pytest.mark.smoke
+@pytest.mark.web
 def test_projects_page_header(app: Application, login):
     """Test page header functionality"""
     app.projects_page.open()
 
-    app.projects_page.verify_page_loaded()
+    app.projects_page.is_loaded()
 
     app.projects_page.header.check_selected_company("QA Club Lviv")
     app.projects_page.header.plan_name_should_be("Enterprise plan")
