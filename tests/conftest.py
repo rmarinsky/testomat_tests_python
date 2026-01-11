@@ -5,7 +5,7 @@ import pytest
 from dotenv import load_dotenv
 from playwright.sync_api import Browser, BrowserContext, Page, sync_playwright
 
-from src.web.Application import Application
+from src.web.application import Application
 
 load_dotenv()
 
@@ -73,6 +73,7 @@ def logged_context(browser_instance: Browser, configs: Config) -> BrowserContext
 @pytest.fixture(scope="function")
 def logged_app(logged_context: BrowserContext) -> Application:
     page = logged_context.new_page()
+    page.goto("/projects")
     yield Application(page)
     page.close()
 
