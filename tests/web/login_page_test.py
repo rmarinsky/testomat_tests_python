@@ -31,7 +31,7 @@ invalid_login_test_data = [
 ]
 
 
-@pytest.mark.smoke
+@pytest.mark.regression
 @pytest.mark.web
 @pytest.mark.parametrize("email, password", invalid_login_test_data)
 def test_login_invalid(shared_page: Application, email: str, password: str):

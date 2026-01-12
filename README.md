@@ -50,7 +50,6 @@ testomat_tests/
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Create virtual environment and install dependencies
-uv venv
 uv sync
 
 # Install Playwright browsers
@@ -107,18 +106,19 @@ pytest --html=test-result/report.html
 
 ## Test Markers
 
-| Marker | Description |
-|--------|-------------|
-| `smoke` | Quick validation tests |
-| `regression` | Full test suite |
-| `web` | Web UI specific tests |
-| `slow` | Long-running tests |
+| Marker       | Description            |
+|--------------|------------------------|
+| `smoke`      | Quick validation tests |
+| `regression` | Full test suite        |
+| `web`        | Web UI specific tests  |
+| `slow`       | Long-running tests     |
 
 ## Architecture
 
 ### Page Object Model (POM)
 
 All pages inherit from `BasePage` which provides common functionality:
+
 - `is_loaded()` - Verify page is loaded
 - `wait_for_load()` - Wait for page to fully load
 - `get_current_url()` - Get current page URL
@@ -149,14 +149,14 @@ class Application:
 
 ### Fixture Strategy
 
-| Fixture | Scope | Purpose |
-|---------|-------|---------|
-| `configs` | session | Load environment variables |
-| `browser_instance` | session | Reuse browser across tests |
-| `app` | function | Fresh page per test |
-| `logged_app` | function | Pre-authenticated page per test |
-| `logged_context` | session | Reused authenticated session |
-| `shared_page` | module | Shared page for parametrized tests |
+| Fixture            | Scope    | Purpose                            |
+|--------------------|----------|------------------------------------|
+| `configs`          | session  | Load environment variables         |
+| `browser_instance` | session  | Reuse browser across tests         |
+| `app`              | function | Fresh page per test                |
+| `logged_app`       | function | Pre-authenticated page per test    |
+| `logged_context`   | session  | Reused authenticated session       |
+| `shared_page`      | module   | Shared page for parametrized tests |
 
 ## Code Quality
 
@@ -176,6 +176,7 @@ ruff format .
 ## Browser Configuration
 
 Default browser settings (configured in `conftest.py`):
+
 - Resolution: 1920x1080
 - Locale: uk-UA
 - Timezone: Europe/Kyiv
@@ -185,6 +186,7 @@ Default browser settings (configured in `conftest.py`):
 ## Dependencies
 
 ### Runtime
+
 - **playwright** - Browser automation
 - **pytest** - Test framework
 - **pytest-html** - HTML reporting
@@ -192,4 +194,5 @@ Default browser settings (configured in `conftest.py`):
 - **python-dotenv** - Environment variable management
 
 ### Development
+
 - **ruff** - Linter and formatter

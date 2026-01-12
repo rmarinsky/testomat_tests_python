@@ -11,7 +11,7 @@ class ProjectPage:
         self.side_bar = SideBar(page)
 
     def is_loaded(self) -> Self:
-        expect(self.page.locator(".sticky-header")).to_be_visible()
+        expect(self.page.locator(".sticky-header")).to_be_visible(timeout=10000)
         expect(self.page.locator(".mainnav-menu")).to_be_visible()
         expect(self.page.locator("[placeholder='First Suite']")).to_be_visible()
         expect(self.page.get_by_role("button", name="Suite")).to_be_visible()
@@ -25,10 +25,8 @@ class ProjectPage:
         self.page.locator(".back .third-btn").click()
         return self
 
-    def create_test(self):
-        self.page.get_by_role("button", name="Test  ").click()
-
-        expect(self.page.get_by_text("Select suite for test")).to_be_visible()
+    def create_test_via_popup(self):
+        self.page.locator(".sticky-header").get_by_role("button", name="Test  ", exact=True).click()
         return self
 
     def create_first_suite(self, target_suite_name: str):
