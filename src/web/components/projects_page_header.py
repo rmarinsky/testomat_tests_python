@@ -10,6 +10,8 @@ class ProjectsPageHeader:
         self.page = page
 
         self.page_title = page.locator("h2", has_text="Projects")
+        self.enterprise_plan_label = page.get_by_text("Enterprise plan")
+        self.free_plan_label = page.get_by_text("Free plan")
         self.company_selector = page.locator("#company_id")
         self.plan_badge = page.locator(".tooltip-project-plan")
 

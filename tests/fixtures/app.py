@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 import pytest
-from playwright.sync_api import Browser, BrowserContext, Page
+from playwright.sync_api import Browser, BrowserContext, Page, expect
 
 from src.web.application import Application
 from tests.fixtures.cookie_helper import (
@@ -58,7 +58,7 @@ def app(browser_instance: Browser, configs) -> Application:
 
 
 @pytest.fixture(scope="session")
-def logged_context(browser_instance: Browser, configs) -> BrowserContext:
+def logged_page(browser_instance: Browser, configs) -> BrowserContext:
     """Logged context - reuses authenticated session (session scope)."""
     if STORAGE_STATE_PATH.exists():
         context = build_browser_context(browser_instance, configs.app_base_url, storage_state=STORAGE_STATE_PATH)
@@ -77,24 +77,22 @@ def logged_context(browser_instance: Browser, configs) -> BrowserContext:
     context.storage_state(path=STORAGE_STATE_PATH)
     create_free_project_state()
 
-    page.close()
-    yield context
+    yield page
     context.close()
 
 
 @pytest.fixture(scope="function")
-def logged_app(logged_context: BrowserContext) -> Application:
+def logged_app(logged_page: BrowserContext) -> Application:
     """Logged app - new page from authenticated context for each test."""
-    page = logged_context.new_page()
-    page.goto("/projects")
-    yield Application(page)
-    page.close()
+    logged_page.goto("/projects")
+    yield Application(logged_page)
+    logged_page.close()
 
 
 @pytest.fixture(scope="function")
-def cookies(logged_context: BrowserContext) -> CookieHelper:
+def cookies(logged_page: BrowserContext) -> CookieHelper:
     """Provides cookie manipulation helper for the logged-in context."""
-    return CookieHelper(logged_context)
+    return CookieHelper(logged_page)
 
 
 @pytest.fixture(scope="module")
@@ -115,15 +113,34 @@ def shared_page(shared_browser: Page) -> Application:
 
 
 @pytest.fixture(scope="session")
-def free_project_context(logged_context: BrowserContext, browser_instance: Browser, configs) -> BrowserContext:
-    context = build_browser_context(browser_instance, configs.app_base_url, storage_state=FREE_PROJECT_STORAGE_PATH)
-    yield context
+def free_project_page(logged_page: BrowserContext, browser_instance: Browser, configs) -> Page:
+    if FREE_PROJECT_STORAGE_PATH.exists():
+        context = build_browser_context(browser_instance, configs.app_base_url, storage_state=FREE_PROJECT_STORAGE_PATH)
+        yield context.new_page()
+        context.close()
+        return
+
+    context = build_browser_context(browser_instance, configs.app_base_url)
+    page = context.new_page()
+    app = Application(page)
+    app.login_page.open()
+    app.login_page.is_loaded()
+    app.login_page.login_user(configs.email, configs.password)
+
+    app.projects_page.is_loaded()
+    app.projects_page.open()
+    app.projects_page.header.select_company("Free Projects")
+    expect(app.projects_page.header.free_plan_label).to_be_visible()
+
+    FREE_PROJECT_STORAGE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    context.storage_state(path=FREE_PROJECT_STORAGE_PATH)
+
+    yield page
     context.close()
 
 
 @pytest.fixture(scope="function")
-def free_project_app(free_project_context: BrowserContext) -> Application:
-    page = free_project_context.new_page()
-    page.goto("/projects")
-    yield Application(page)
-    page.close()
+def free_project_app(free_project_page: Page) -> Application:
+    free_project_page.goto("/projects")
+    yield Application(free_project_page)
+    free_project_page.close()
