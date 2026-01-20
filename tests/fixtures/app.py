@@ -58,11 +58,11 @@ def app(browser_instance: Browser, configs) -> Application:
 
 
 @pytest.fixture(scope="session")
-def logged_page(browser_instance: Browser, configs) -> BrowserContext:
+def logged_page(browser_instance: Browser, configs) -> Page:
     """Logged context - reuses authenticated session (session scope)."""
     if STORAGE_STATE_PATH.exists():
         context = build_browser_context(browser_instance, configs.app_base_url, storage_state=STORAGE_STATE_PATH)
-        yield context
+        yield context.new_page()
         context.close()
         return
 
@@ -82,11 +82,10 @@ def logged_page(browser_instance: Browser, configs) -> BrowserContext:
 
 
 @pytest.fixture(scope="function")
-def logged_app(logged_page: BrowserContext) -> Application:
+def logged_app(logged_page: Page) -> Application:
     """Logged app - new page from authenticated context for each test."""
     logged_page.goto("/projects")
     yield Application(logged_page)
-    logged_page.close()
 
 
 @pytest.fixture(scope="function")

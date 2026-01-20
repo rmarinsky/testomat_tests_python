@@ -6,8 +6,8 @@ class TestModal:
         self.page = page
         self._title = page.locator("[placeholder='Title']")
 
-    def is_loaded(self) -> TestModal:
-        expect(self.page.get_by_role("heading ", name="New test")).to_be_visible()
+    def is_loaded(self, artifact_type: str) -> TestModal:
+        expect(self.page.get_by_role("heading ", name=f"New {artifact_type}")).to_be_visible()
         expect(self._title).to_be_visible()
         return self
 
@@ -19,8 +19,8 @@ class TestModal:
         self.page.get_by_role("button", name="Save").click()
         return self
 
-    def edit_is_visible(self) -> TestModal:
-        expect(self.page.get_by_role("heading", name="Edit Test")).to_be_visible()
+    def edit_is_visible(self, artifact_type: str) -> TestModal:
+        expect(self.page.get_by_role("heading", name=f"Edit {artifact_type}")).to_be_visible()
         return self
 
     def saved_status_label_visible(self) -> TestModal:

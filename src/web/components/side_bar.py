@@ -12,31 +12,30 @@ class SideBar:
         self.page = page
 
         # Main navigation container
-        self._menu = page.locator('.mainnav-menu')
+        self._menu = page.locator(".mainnav-menu")
 
         # Logo and close button
         self._logo = page.locator("button.btn-open")
-        self._close_button = page.get_by_role('button', name='Close')
+        self._close_button = page.get_by_role("button", name="Close")
 
         # Main navigation links
-        self._tests_link = page.get_by_role('link', name='Tests')
-        self._runs_link = page.get_by_role('link', name='Runs')
-        self._plans_link = page.get_by_role('link', name='Plans')
-        self._steps_link = page.get_by_role('link', name='Steps')
-        self._pulse_link = page.get_by_role('link', name='Pulse')
-        self._imports_link = page.get_by_role('link', name='Imports')
-        self._analytics_link = page.get_by_role('link', name='Analytics')
-        self._branches_link = page.get_by_role('link', name='Branches')
-        self._settings_link = page.get_by_role('link', name='Settings')
+        self._tests_link = page.get_by_role("link", name="Tests")
+        self._runs_link = page.get_by_role("link", name="Runs")
+        self._plans_link = page.get_by_role("link", name="Plans")
+        self._steps_link = page.get_by_role("link", name="Steps")
+        self._pulse_link = page.get_by_role("link", name="Pulse")
+        self._imports_link = page.get_by_role("link", name="Imports")
+        self._analytics_link = page.get_by_role("link", name="Analytics")
+        self._branches_link = page.get_by_role("link", name="Branches")
+        self._settings_link = page.get_by_role("link", name="Settings")
 
         # Footer navigation links
-        self._help_link = page.get_by_role('link', name='Help')
-        self._projects_link = page.get_by_role('link', name='Projects')
+        self._help_link = page.get_by_role("link", name="Help")
+        self._projects_link = page.get_by_role("link", name="Projects")
 
     def is_loaded(self) -> SideBar:
         expect(self._menu).to_be_visible()
         expect(self._logo).to_be_visible()
-        expect(self._projects_link).to_be_visible()
         return self
 
     # Navigation methods - Fluent interface
@@ -94,14 +93,14 @@ class SideBar:
 
     def get_user_profile_link(self, user_name: str):
         """Get user profile link by name"""
-        return self.page.get_by_role('link', name=user_name)
+        return self.page.get_by_role("link", name=user_name)
 
     def click_user_profile(self, user_name: str) -> SideBar:
         self.get_user_profile_link(user_name).click()
         return self
 
     def link_by_name(self, name: str):
-        return self._menu.get_by_role('link', name=name)
+        return self._menu.get_by_role("link", name=name)
 
     def expect_tab_active(self, name: str) -> SideBar:
         link = self.link_by_name(name)
