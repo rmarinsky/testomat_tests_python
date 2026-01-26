@@ -14,7 +14,6 @@ class Config:
     email: str
     password: str
     testomat_token: str
-    project_id: str | None = None
 
 
 @pytest.fixture(scope="session")

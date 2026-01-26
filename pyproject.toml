@@ -10,6 +10,7 @@ dependencies = [
     "pytest-html>=4.1.1",
     "python-dotenv>=1.2.1",
     "playwright>=1.55.0",
+    "selenium>=4.40.0",
 ]
 
 [dependency-groups]
