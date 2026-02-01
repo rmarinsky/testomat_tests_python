@@ -101,7 +101,7 @@ pytest -v
 pytest --headed
 
 # Generate HTML report (default: test-result/report.html)
-pytest --html=test-result/report.html
+pytest --html=./test-result/report.html
 ```
 
 ## Test Markers
