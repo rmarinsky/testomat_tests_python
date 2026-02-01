@@ -11,7 +11,7 @@ EXPECTED_PLAN = "Enterprise plan"
 
 @pytest.mark.smoke
 @pytest.mark.web
-def test_projects_page_header(logged_app: Application):
+def test_projects_page_header_search_and_filtering(logged_app: Application):
     """Test page header functionality"""
     logged_app.projects_page.open()
 

@@ -6,6 +6,6 @@ from web.application import Application
 
 @pytest.mark.smoke
 @pytest.mark.web
-def test_projects_page_header(free_project_app: Application):
+def test_free_plan_empty_projects_page(free_project_app: Application):
     expect(free_project_app.page.get_by_text("You have not created any projects yet")).to_be_visible()
     expect(free_project_app.page.get_by_text("Free plan")).to_be_visible()

@@ -54,9 +54,7 @@ def start_tracing(context: BrowserContext) -> None:
     context.tracing.start(screenshots=True, snapshots=True, sources=True)
 
 
-def stop_tracing(context: BrowserContext, request: pytest.FixtureRequest) -> None:
-    test_name = request.node.name
-
+def stop_tracing(context: BrowserContext, test_name: str) -> None:
     trace_path = TRACES_DIR / f"{test_name}.zip"
     trace_path.parent.mkdir(parents=True, exist_ok=True)
     context.tracing.stop(path=trace_path)
@@ -136,13 +134,14 @@ def logged_app(logged_page: Page, request: pytest.FixtureRequest) -> Application
 def free_project_app(free_project_page: Page, request: pytest.FixtureRequest) -> Application:
     """Function-scoped: tracing per test."""
     context = free_project_page.context
+    test_name = request.node.name
 
     start_tracing(context)
     free_project_page.goto("/projects")
 
     yield Application(free_project_page)
 
-    stop_tracing(context, request)
+    stop_tracing(context, test_name)
 
 
 @pytest.fixture(scope="function")

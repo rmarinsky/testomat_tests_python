@@ -6,7 +6,7 @@ from web.application import Application
 
 @pytest.mark.smoke
 @pytest.mark.web
-def test_projects_page_header(logged_app: Application):
+def test_switch_from_enterprise_to_free_company(logged_app: Application):
     logged_app.projects_page.open()
     expect(logged_app.projects_page.header.enterprise_plan_label).to_be_visible()
     logged_app.projects_page.header.select_company("Free Projects")
