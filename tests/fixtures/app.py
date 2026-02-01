@@ -54,10 +54,15 @@ def start_tracing(context: BrowserContext) -> None:
     context.tracing.start(screenshots=True, snapshots=True, sources=True)
 
 
-def stop_tracing(context: BrowserContext, test_name: str) -> None:
-    trace_path = TRACES_DIR / f"{test_name}.zip"
-    trace_path.parent.mkdir(parents=True, exist_ok=True)
-    context.tracing.stop(path=trace_path)
+def stop_tracing_on_failure(context: BrowserContext, request: pytest.FixtureRequest) -> None:
+    """Stop tracing and save only if test failed."""
+    failed = hasattr(request.node, "rep_call") and request.node.rep_call.failed
+    if failed:
+        trace_path = TRACES_DIR / f"{request.node.name}.zip"
+        trace_path.parent.mkdir(parents=True, exist_ok=True)
+        context.tracing.stop(path=trace_path)
+    else:
+        context.tracing.stop()
 
 
 def create_free_project_state() -> None:
@@ -118,30 +123,24 @@ def free_project_page(browser_instance: Browser, configs) -> Page:
 
 @pytest.fixture(scope="function")
 def logged_app(logged_page: Page, request: pytest.FixtureRequest) -> Application:
-    """Function-scoped: tracing per test."""
-    context = logged_page.context
-    test_name = request.node.name
-
-    start_tracing(context)
+    """Function-scoped: tracing per test, saves trace only on failure."""
+    start_tracing(logged_page.context)
     logged_page.goto("/projects")
 
     yield Application(logged_page)
 
-    stop_tracing(context, test_name)
+    stop_tracing_on_failure(logged_page.context, request)
 
 
 @pytest.fixture(scope="function")
 def free_project_app(free_project_page: Page, request: pytest.FixtureRequest) -> Application:
-    """Function-scoped: tracing per test."""
-    context = free_project_page.context
-    test_name = request.node.name
-
-    start_tracing(context)
+    """Function-scoped: tracing per test, saves trace only on failure."""
+    start_tracing(free_project_page.context)
     free_project_page.goto("/projects")
 
     yield Application(free_project_page)
 
-    stop_tracing(context, test_name)
+    stop_tracing_on_failure(free_project_page.context, request)
 
 
 @pytest.fixture(scope="function")
