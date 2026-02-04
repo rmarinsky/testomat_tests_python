@@ -1,96 +1,50 @@
-from dataclasses import dataclass, field
 from datetime import datetime
 
-
-@dataclass
-class ProjectSettings:
-    is_share_public_report: bool = False
-    is_share_living_docs: bool = False
-    is_keep_ids_in_feature: bool = False
-    is_shows_test_type: bool = True
-    is_run_folder_required: bool = False
-    semantic_search: bool = False
-    similar_search: bool = False
-    ai_chat: bool = False
-    labels_permission: bool = False
-    archive_storage: bool = False
-
-    @classmethod
-    def from_dict(cls, data: dict | None) -> "ProjectSettings | None":
-        if data is None:
-            return None
-        return cls(
-            is_share_public_report=data.get("is_share_public_report", False),
-            is_share_living_docs=data.get("is_share_living_docs", False),
-            is_keep_ids_in_feature=data.get("is_keep_ids_in_feature", False),
-            is_shows_test_type=data.get("is_shows_test_type", True),
-            is_run_folder_required=data.get("is_run_folder_required", False),
-            semantic_search=data.get("semantic_search", False),
-            similar_search=data.get("similar_search", False),
-            ai_chat=data.get("ai_chat", False),
-            labels_permission=data.get("labels_permission", False),
-            archive_storage=data.get("archive_storage", False),
-        )
+from pydantic import BaseModel, ConfigDict, Field
 
 
-@dataclass
-class ProjectAttributes:
-    title: str
-    status: str
-    tests_count: int
-    created_at: datetime | None
+class ProjectSettings(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    is_share_public_report: bool = Field(default=False, alias="is-share-public-report")
+    is_share_living_docs: bool = Field(default=False, alias="is-share-living-docs")
+    is_keep_ids_in_feature: bool = Field(default=False, alias="is-keep-ids-in-feature")
+    is_shows_test_type: bool = Field(default=True, alias="is-shows-test-type")
+    is_run_folder_required: bool = Field(default=False, alias="is-run-folder-required")
+    semantic_search: bool = Field(default=False, alias="semantic-search")
+    similar_search: bool = Field(default=False, alias="similar-search")
+    ai_chat: bool = Field(default=False, alias="ai-chat")
+    labels_permission: bool = Field(default=False, alias="labels-permission")
+    archive_storage: bool = Field(default=False, alias="archive-storage")
+
+
+class ProjectAttributes(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    title: str = ""
+    status: str = ""
+    tests_count: int = Field(default=0, alias="tests-count")
+    created_at: datetime | None = Field(default=None, alias="created-at")
     lang: str | None = None
     framework: str | None = None
     url: str | None = None
     demo: bool = False
-    has_living_docs: bool = False
-    record_url: str | None = None
+    has_living_docs: bool = Field(default=False, alias="has-living-docs")
+    record_url: str | None = Field(default=None, alias="record-url")
     avatar: str | None = None
-    api_key: str | None = None
-    testomatio_url: str | None = None
+    api_key: str | None = Field(default=None, alias="api-key")
+    testomatio_url: str | None = Field(default=None, alias="testomatio-url")
     branch: str | None = None
-    living_doc_url: str | None = None
-    project_settings: ProjectSettings | None = None
-
-    @classmethod
-    def from_dict(cls, data: dict) -> "ProjectAttributes":
-        created_at = None
-        if data.get("created-at"):
-            created_at = datetime.fromisoformat(data["created-at"].replace("Z", "+00:00"))
-
-        return cls(
-            title=data.get("title", ""),
-            status=data.get("status", ""),
-            tests_count=data.get("tests-count", 0),
-            created_at=created_at,
-            lang=data.get("lang"),
-            framework=data.get("framework"),
-            url=data.get("url"),
-            demo=data.get("demo", False),
-            has_living_docs=data.get("has-living-docs", False),
-            record_url=data.get("record-url"),
-            avatar=data.get("avatar"),
-            api_key=data.get("api-key"),
-            testomatio_url=data.get("testomatio-url"),
-            branch=data.get("branch"),
-            living_doc_url=data.get("living-doc-url"),
-            project_settings=ProjectSettings.from_dict(data.get("project-settings")),
-        )
+    living_doc_url: str | None = Field(default=None, alias="living-doc-url")
+    project_settings: ProjectSettings | None = Field(default=None, alias="project-settings")
 
 
-@dataclass
-class Project:
+class Project(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     id: str
     type: str
     attributes: ProjectAttributes
-
-    @classmethod
-    def from_dict(cls, data: dict) -> "Project":
-        return cls(
-            id=data["id"],
-            type=data["type"],
-            attributes=ProjectAttributes.from_dict(data["attributes"]),
-        )
 
     @property
     def title(self) -> str:
@@ -105,14 +59,10 @@ class Project:
         return self.attributes.tests_count
 
 
-@dataclass
-class ProjectsResponse:
-    data: list[Project] = field(default_factory=list)
+class ProjectsResponse(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
 
-    @classmethod
-    def from_dict(cls, data: dict) -> "ProjectsResponse":
-        projects = [Project.from_dict(p) for p in data.get("data", [])]
-        return cls(data=projects)
+    data: list[Project] = Field(default_factory=list)
 
     def __iter__(self):
         return iter(self.data)

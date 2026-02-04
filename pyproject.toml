@@ -5,16 +5,18 @@ description = "Playwright-based E2E testing framework for Testomat application"
 requires-python = ">=3.14"
 dependencies = [
     "faker>=37.12.0",
-    "httpx>=0.28.0",
+    "requests>=2.32.0",
     "pytest>=8.4.2",
     "pytest-html>=4.1.1",
     "python-dotenv>=1.2.1",
     "playwright>=1.55.0",
     "selenium>=4.40.0",
+    "pydantic>=2.12.5",
 ]
 
 [dependency-groups]
 dev = [
+    "datamodel-code-generator>=0.53.0",
     "ruff>=0.14.0",
 ]
 
@@ -92,3 +94,10 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+
+[tool.datamodel-codegen]
+input = "./api_testomat.yaml"
+output = "./src/api/models/models.py"
+target-python-version = "3.14"
+snake-case-field = true
+field-constraints = true

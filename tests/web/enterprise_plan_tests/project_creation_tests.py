@@ -1,7 +1,7 @@
 import pytest
 from faker import Faker
 
-from api import ApiClient
+from src.api.controllers import ProjectController
 from src.web.application import Application
 
 
@@ -29,8 +29,11 @@ def test_new_project_creation_and_test_popup(logged_app: Application):
 
 @pytest.mark.smoke
 @pytest.mark.web
-def test_open_project_and_create_test_suite_from_side_bar(api_client: ApiClient, logged_app: Application):
-    all_projects = api_client.get_projects()
+def test_open_project_and_create_test_suite_from_side_bar(
+    project_controller: ProjectController,
+    logged_app: Application,
+):
+    all_projects = project_controller.get_all()
     target_project_id = all_projects[0].id
 
     logged_app.project_page.open_by_id(target_project_id).side_bar.is_loaded()
