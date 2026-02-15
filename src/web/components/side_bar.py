@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 
+import allure
 from playwright.sync_api import Page, expect
 
 
@@ -33,75 +34,94 @@ class SideBar:
         self._help_link = page.get_by_role("link", name="Help")
         self._projects_link = page.get_by_role("link", name="Projects")
 
+    @allure.step
     def is_loaded(self) -> SideBar:
         expect(self._menu).to_be_visible()
         expect(self._logo).to_be_visible()
         return self
 
     # Navigation methods - Fluent interface
+    @allure.step
     def go_to_tests(self) -> SideBar:
         self._tests_link.click()
         return self
 
-    def go_to_runs(self) -> SideBar:
+    @allure.step
+    @allure.step
+    def o_to_runs(self) -> SideBar:
         self._runs_link.click()
         return self
 
+    @allure.step
     def go_to_plans(self) -> SideBar:
         self._plans_link.click()
         return self
 
+    @allure.step
     def go_to_steps(self) -> SideBar:
         self._steps_link.click()
         return self
 
+    @allure.step
     def go_to_pulse(self) -> SideBar:
         self._pulse_link.click()
         return self
 
+    @allure.step
     def go_to_imports(self) -> SideBar:
         self._imports_link.click()
         return self
 
+    @allure.step
     def go_to_analytics(self) -> SideBar:
         self._analytics_link.click()
         return self
 
+    @allure.step
     def go_to_branches(self) -> SideBar:
         self._branches_link.click()
         return self
 
+    @allure.step
     def go_to_settings(self) -> SideBar:
         self._settings_link.click()
         return self
 
+    @allure.step
     def go_to_help(self) -> SideBar:
         self._help_link.click()
         return self
 
+    @allure.step
     def go_to_projects(self) -> SideBar:
         self._projects_link.click()
         return self
 
+    @allure.step
     def click_logo(self) -> SideBar:
         self._logo.click()
         return self
 
+    @allure.step
     def close_menu(self) -> SideBar:
         self._close_button.click()
         return self
 
+    @allure.step
     def get_user_profile_link(self, user_name: str):
         """Get user profile link by name"""
         return self.page.get_by_role("link", name=user_name)
 
+    @allure.step
     def click_user_profile(self, user_name: str) -> SideBar:
         self.get_user_profile_link(user_name).click()
         return self
 
+    @allure.step
     def link_by_name(self, name: str):
         return self._menu.get_by_role("link", name=name)
 
+    @allure.step
     def expect_tab_active(self, name: str) -> SideBar:
         link = self.link_by_name(name)
         expect(link).to_be_visible()

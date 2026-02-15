@@ -1,3 +1,4 @@
+import pytest
 from selenium.common import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -8,6 +9,8 @@ from src.web.selenium.pages import LoginPage, LoginPageV2
 from tests.fixtures.config import Config
 
 
+@pytest.mark.regression
+@pytest.mark.selenium
 def test_selenium_login_and_search(driver: WebDriver, configs: Config):
     """Original test without page objects."""
     wait = WebDriverWait(driver, 10, 0.1, ignored_exceptions=[NoSuchElementException, StaleElementReferenceException])

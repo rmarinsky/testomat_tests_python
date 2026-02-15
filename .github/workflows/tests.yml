@@ -1,0 +1,185 @@
+name: E2E Tests
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+on:
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 8 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - regression
+          - all
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+
+      - name: Run Ruff linter
+        run: uv run ruff check .
+
+      - name: Run Ruff formatter check
+        run: uv run ruff format --check .
+
+  smoke-tests:
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'pull_request' ||
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' &&
+       (inputs.test_suite == 'smoke' || inputs.test_suite == 'all'))
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+        with:
+          install-playwright: 'true'
+
+      - name: Run smoke tests
+        env:
+          CI: true
+          BASE_URL: ${{ secrets.BASE_URL }}
+          BASE_APP_URL: ${{ secrets.BASE_APP_URL }}
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          TESTOMAT_TOKEN: ${{ secrets.TESTOMAT_TOKEN }}
+        run: uv run pytest -m smoke
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-allure-results
+          path: test-result/allure-results/
+          retention-days: 14
+
+      - name: Upload traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-traces
+          path: test-result/traces/
+          retention-days: 14
+
+  regression-tests:
+    runs-on: ubuntu-latest
+    needs: [ smoke-tests ]
+    if: >
+      always() && (
+        (github.event_name == 'schedule' && needs.smoke-tests.result == 'success') ||
+        (github.event_name == 'workflow_dispatch' && inputs.test_suite == 'all' && needs.smoke-tests.result == 'success') ||
+        (github.event_name == 'workflow_dispatch' && inputs.test_suite == 'regression')
+      )
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup environment
+        uses: ./.github/actions/setup
+        with:
+          install-playwright: 'true'
+
+      - name: Run regression tests
+        env:
+          CI: true
+          BASE_URL: ${{ secrets.BASE_URL }}
+          BASE_APP_URL: ${{ secrets.BASE_APP_URL }}
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          TESTOMAT_TOKEN: ${{ secrets.TESTOMAT_TOKEN }}
+        run: uv run pytest -m regression
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-allure-results
+          path: test-result/allure-results/
+          retention-days: 14
+
+      - name: Upload traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-traces
+          path: test-result/traces/
+          retention-days: 14
+
+  publish-report:
+    runs-on: ubuntu-latest
+    needs: [ smoke-tests, regression-tests ]
+    if: always() && (needs.smoke-tests.result != 'skipped' || needs.regression-tests.result != 'skipped')
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download smoke Allure results
+        if: needs.smoke-tests.result != 'skipped'
+        uses: actions/download-artifact@v4
+        with:
+          name: smoke-allure-results
+          path: allure-results/smoke
+
+      - name: Download regression Allure results
+        if: needs.regression-tests.result != 'skipped'
+        uses: actions/download-artifact@v4
+        with:
+          name: regression-allure-results
+          path: allure-results/regression
+
+      - name: Install Allure CLI
+        run: |
+          curl -sL https://github.com/allure-framework/allure2/releases/download/2.36.0/allure-2.36.0.tgz | tar -xz
+          echo "$PWD/allure-2.36.0/bin" >> $GITHUB_PATH
+
+      - name: Generate Allure reports
+        run: |
+          if [ -d allure-results/smoke ]; then
+            allure generate allure-results/smoke -o pages/allure/smoke --clean
+          fi
+          if [ -d allure-results/regression ]; then
+            allure generate allure-results/regression -o pages/allure/regression --clean
+          fi
+
+      - name: Prepare Pages content
+        run: |
+          mkdir -p pages
+          if [ -f report/smoke/report.html ]; then
+            cp report/smoke/report.html pages/index.html
+          fi
+          if [ -f report/regression/report.html ]; then
+            cp report/regression/report.html pages/regression.html
+          fi
+          echo "https://rmarinsky.github.io/testomat_tests_python/allure/smoke"
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

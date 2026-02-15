@@ -1,5 +1,4 @@
-from typing import Tuple, Union
-
+import allure
 from selenium.common import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -23,10 +22,11 @@ class Wait:
             driver, timeout, poll_frequency=self.DEFAULT_POLL, ignored_exceptions=self.IGNORED_EXCEPTIONS
         )
 
-    def _is_locator(self, target: SelectorOrElement) -> bool:
+    def is_locator(self, target: SelectorOrElement) -> bool:
         return isinstance(target, tuple) and len(target) == 2
 
-    def for_visible(self, target: SelectorOrElement, custom_timeout: int = None) -> WebElement:
+    @allure.step
+    def for_visible(self, target: SelectorOrElement, custom_timeout: int | None = None) -> WebElement:
         if custom_timeout:
             self._wait = WebDriverWait(self.driver, custom_timeout, poll_frequency=self.DEFAULT_POLL)
         if self._is_locator(target):
@@ -34,46 +34,56 @@ class Wait:
 
         return self._wait.until(EC.visibility_of(target))
 
+    @allure.step
     def for_invisible(self, target: SelectorOrElement) -> bool:
         if self._is_locator(target):
             return self._wait.until(EC.invisibility_of_element_located(target))
 
         return self._wait.until(EC.invisibility_of_element(target))
 
+    @allure.step
     def for_present(self, locator: BySelector) -> WebElement:
         return self._wait.until(EC.presence_of_element_located(locator))
 
+    @allure.step
     def for_all_present(self, locator: BySelector) -> list[WebElement]:
         return self._wait.until(EC.presence_of_all_elements_located(locator))
 
+    @allure.step
     def for_clickable(self, target: SelectorOrElement) -> WebElement:
         if self._is_locator(target):
             return self._wait.until(EC.element_to_be_clickable(target))
 
         return self._wait.until(EC.element_to_be_clickable(target))
 
+    @allure.step
     def for_text_present(self, target: SelectorOrElement, text: str) -> bool:
         if self._is_locator(target):
             return self._wait.until(EC.text_to_be_present_in_element(target, text))
         return self._wait.until(lambda d: text in target.text)
 
+    @allure.step
     def for_selected(self, target: SelectorOrElement) -> bool:
         if self._is_locator(target):
             return self._wait.until(EC.element_located_to_be_selected(target))
 
         return self._wait.until(EC.element_to_be_selected(target))
 
+    @allure.step
     def for_stale(self, element: WebElement) -> bool:
         return self._wait.until(EC.staleness_of(element))
 
+    @allure.step
     def for_frame(self, target: SelectorOrElement) -> WebDriver:
         if self._is_locator(target):
             return self._wait.until(EC.frame_to_be_available_and_switch_to_it(target))
 
         return self._wait.until(EC.frame_to_be_available_and_switch_to_it(target))
 
+    @allure.step
     def until(self, condition):
         return self._wait.until(condition)
 
+    @allure.step
     def until_not(self, condition):
         return self._wait.until_not(condition)

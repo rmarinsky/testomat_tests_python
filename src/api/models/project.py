@@ -23,7 +23,7 @@ class ProjectAttributes(BaseModel):
 
     title: str = ""
     status: str = ""
-    tests_count: int = Field(default=0, alias="tests-count")
+    tests_count: int | None = Field(default=0, alias="tests-count")
     created_at: datetime | None = Field(default=None, alias="created-at")
     lang: str | None = None
     framework: str | None = None
