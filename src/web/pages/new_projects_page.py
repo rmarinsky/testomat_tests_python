@@ -36,7 +36,7 @@ class NewProjectsPage:
         self._form_container.locator("#project_title").fill(target_project_name)
         return self
 
-    def click_create(self) -> "ProjectPage":
+    def click_create(self) -> ProjectPage:
         from .project_page import ProjectPage
 
         self._form_container.locator("#project-create-btn input").click()

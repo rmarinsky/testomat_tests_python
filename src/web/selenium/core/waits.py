@@ -1,5 +1,3 @@
-from typing import Tuple, Union
-
 from selenium.common import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -26,7 +24,7 @@ class Wait:
     def _is_locator(self, target: SelectorOrElement) -> bool:
         return isinstance(target, tuple) and len(target) == 2
 
-    def for_visible(self, target: SelectorOrElement, custom_timeout: int = None) -> WebElement:
+    def for_visible(self, target: SelectorOrElement, custom_timeout: int | None = None) -> WebElement:
         if custom_timeout:
             self._wait = WebDriverWait(self.driver, custom_timeout, poll_frequency=self.DEFAULT_POLL)
         if self._is_locator(target):

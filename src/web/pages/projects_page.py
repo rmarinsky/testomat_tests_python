@@ -11,15 +11,15 @@ class ProjectsPage:
         self.page = page
         self.header = ProjectsPageHeader(page)
 
-        self.success_message = page.locator('.common-flash-success-right p')
-        self.info_message = page.locator('.common-flash-info-right p')
+        self.success_message = page.locator(".common-flash-success-right p")
+        self.info_message = page.locator(".common-flash-info-right p")
 
-        self.projects_grid = page.locator('#grid')
+        self.projects_grid = page.locator("#grid")
         self._project_cards = page.locator('#grid ul li a[href*="/projects/"]')
 
-        self.total_count = page.locator('.common-counter')
+        self.total_count = page.locator(".common-counter")
 
-    def open(self, url: str = '/projects') -> Self:
+    def open(self, url: str = "/projects") -> Self:
         self.page.goto(url)
         return self
 
@@ -30,7 +30,7 @@ class ProjectsPage:
         return [ProjectCard(card) for card in self._project_cards.all()]
 
     def get_project_by_title(self, title: str) -> ProjectCard:
-        card = self._project_cards.filter(has=self.page.locator('h3', has_text=title)).first
+        card = self._project_cards.filter(has=self.page.locator("h3", has_text=title)).first
         return ProjectCard(card)
 
     def count_of_projects_visible(self, expected_count: int) -> Self:

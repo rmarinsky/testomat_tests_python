@@ -1,6 +1,6 @@
-from src.api.models.SuitePy import SuitePy
 from src.api.controllers.base_controller import BaseController
 from src.api.models.suite import Suite
+from src.api.models.SuitePy import SuitePy
 
 
 class SuiteController(BaseController):
