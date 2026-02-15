@@ -14,7 +14,7 @@ class ProjectsPage:
         self.success_message = page.locator(".common-flash-success-right p")
         self.info_message = page.locator(".common-flash-info-right p")
 
-        self.projects_grid = page.locator("#grid")
+        self.projects_grid = page.locator("#grid,[src*='no-project.svg']")
         self._project_cards = page.locator('#grid ul li a[href*="/projects/"]')
 
         self.total_count = page.locator(".common-counter")
@@ -47,7 +47,7 @@ class ProjectsPage:
 
     def is_loaded(self) -> Self:
         expect(self.header.page_title).to_be_visible()
-        expect(self.projects_grid).to_be_visible()
+        expect(self.projects_grid.first).to_be_visible()
         return self
 
     def verify_success_message(self, expected_text: str) -> Self:
