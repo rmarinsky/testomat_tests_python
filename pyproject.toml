@@ -8,6 +8,7 @@ dependencies = [
     "requests>=2.32.0",
     "pytest>=8.4.2",
     "pytest-html>=4.1.1",
+    "allure-pytest>=2.13.5",
     "python-dotenv>=1.2.1",
     "playwright>=1.55.0",
     "selenium>=4.40.0",
@@ -40,6 +41,7 @@ addopts = [
     "--tb=short",
     "--html=./test-result/report.html",
     "--self-contained-html",
+    "--alluredir=./test-result/allure-results",
 ]
 markers = [
     "smoke: Quick smoke tests for basic functionality",

@@ -2,6 +2,7 @@ import json
 import os
 from pathlib import Path
 
+import allure
 import pytest
 from playwright.sync_api import Browser, BrowserContext, Page, expect
 
@@ -58,12 +59,25 @@ def start_tracing(page: Page) -> None:
 
 
 def stop_tracing_on_failure(page: Page, request: pytest.FixtureRequest) -> None:
-    """Stop tracing and save only if test failed."""
+    """Stop tracing and save only if test failed. Attaches screenshot and trace to Allure."""
     failed = hasattr(request.node, "rep_call") and request.node.rep_call.failed
     if failed:
+        allure.attach(
+            page.screenshot(),
+            name="screenshot",
+            attachment_type=allure.attachment_type.PNG,
+        )
+
         trace_path = TRACES_DIR / f"{request.node.name}.zip"
         trace_path.parent.mkdir(parents=True, exist_ok=True)
         page.context.tracing.stop(path=trace_path)
+
+        allure.attach.file(
+            str(trace_path),
+            name="trace",
+            extension="zip",
+            attachment_type="application/vnd.allure.playwright-trace",
+        )
     else:
         page.context.tracing.stop()
 

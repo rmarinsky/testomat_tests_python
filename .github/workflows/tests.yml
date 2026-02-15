@@ -73,6 +73,14 @@ jobs:
           path: test-result/report.html
           retention-days: 14
 
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-allure-results
+          path: test-result/allure-results/
+          retention-days: 14
+
       - name: Upload traces
         if: failure()
         uses: actions/upload-artifact@v4
@@ -117,6 +125,14 @@ jobs:
           path: test-result/report.html
           retention-days: 14
 
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-allure-results
+          path: test-result/allure-results/
+          retention-days: 14
+
       - name: Upload traces
         if: failure()
         uses: actions/upload-artifact@v4
@@ -146,6 +162,34 @@ jobs:
         with:
           name: regression-html-report
           path: report/regression
+
+      - name: Download smoke Allure results
+        if: needs.smoke-tests.result != 'skipped'
+        uses: actions/download-artifact@v4
+        with:
+          name: smoke-allure-results
+          path: allure-results/smoke
+
+      - name: Download regression Allure results
+        if: needs.regression-tests.result != 'skipped'
+        uses: actions/download-artifact@v4
+        with:
+          name: regression-allure-results
+          path: allure-results/regression
+
+      - name: Install Allure CLI
+        run: |
+          curl -sL https://github.com/allure-framework/allure2/releases/download/2.32.2/allure-2.32.2.tgz | tar -xz
+          echo "$PWD/allure-2.32.2/bin" >> $GITHUB_PATH
+
+      - name: Generate Allure reports
+        run: |
+          if [ -d allure-results/smoke ]; then
+            allure generate allure-results/smoke -o pages/allure/smoke --clean
+          fi
+          if [ -d allure-results/regression ]; then
+            allure generate allure-results/regression -o pages/allure/regression --clean
+          fi
 
       - name: Prepare Pages content
         run: |
