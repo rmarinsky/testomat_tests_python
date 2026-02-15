@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -36,9 +37,10 @@ def get_or_create_context(
         "viewport": {"width": 1920, "height": 1080},
         "locale": "uk-UA",
         "timezone_id": "Europe/Kyiv",
-        "record_video_dir": str(TEST_RESULT_DIR / "videos"),
         "permissions": ["geolocation"],
     }
+    if os.getenv("CI", "false").lower() != "true":
+        kwargs["record_video_dir"] = str(TEST_RESULT_DIR / "videos")
     if has_state:
         kwargs["storage_state"] = str(storage_path)
 
