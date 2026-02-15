@@ -2,7 +2,7 @@ name: E2E Tests
 
 on:
   pull_request:
-    branches: [main]
+    branches: [ main ]
   schedule:
     - cron: '0 8 * * 1-5'
   workflow_dispatch:
@@ -39,10 +39,22 @@ jobs:
       (github.event_name == 'workflow_dispatch' &&
        (inputs.test_suite == 'smoke' || inputs.test_suite == 'all'))
     steps:
-      - name: Setup environment
-        uses: ./.github/actions/setup
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          install-playwright: 'true'
+          enable-cache: true
+
+      - name: Install Python 3.14
+        run: uv python install 3.14
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Install Playwright Chromium
+        run: uv run playwright install --with-deps chromium
 
       - name: Run smoke tests
         env:
@@ -52,7 +64,7 @@ jobs:
           EMAIL: ${{ secrets.EMAIL }}
           PASSWORD: ${{ secrets.PASSWORD }}
           TESTOMAT_TOKEN: ${{ secrets.TESTOMAT_TOKEN }}
-        run: uv run pytest -m smoke --ignore=tests/web/selenium
+        run: uv run pytest -m smoke
 
       - name: Upload HTML report
         if: always()
@@ -77,10 +89,22 @@ jobs:
       (github.event_name == 'workflow_dispatch' &&
        (inputs.test_suite == 'regression' || inputs.test_suite == 'all'))
     steps:
-      - name: Setup environment
-        uses: ./.github/actions/setup
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          install-playwright: 'true'
+          enable-cache: true
+
+      - name: Install Python 3.14
+        run: uv python install 3.14
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Install Playwright Chromium
+        run: uv run playwright install --with-deps chromium
 
       - name: Run regression tests
         env:
@@ -90,7 +114,7 @@ jobs:
           EMAIL: ${{ secrets.EMAIL }}
           PASSWORD: ${{ secrets.PASSWORD }}
           TESTOMAT_TOKEN: ${{ secrets.TESTOMAT_TOKEN }}
-        run: uv run pytest -m regression --ignore=tests/web/selenium
+        run: uv run pytest -m regression
 
       - name: Upload HTML report
         if: always()

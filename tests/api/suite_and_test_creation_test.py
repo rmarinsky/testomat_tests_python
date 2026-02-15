@@ -25,7 +25,7 @@ def test_create_suite(
     assert actual_test_suite.attributes.title == suite_name
 
 
-@pytest.mark.smoke
+@pytest.mark.regression
 @pytest.mark.api
 def test_create_suite_and_case(
     project: Project,
