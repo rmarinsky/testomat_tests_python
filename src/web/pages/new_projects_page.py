@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Self
 
+import allure
 from playwright.sync_api import Page, expect
 
 if TYPE_CHECKING:
@@ -11,10 +12,12 @@ class NewProjectsPage:
         self.page = page
         self._form_container = page.locator("#content-desktop [action='/projects']")
 
+    @allure.step
     def open(self) -> Self:
         self.page.goto("/projects/new")
         return self
 
+    @allure.step
     def is_loaded(self) -> Self:
         expect(self._form_container).to_be_visible()
         project_label_classical = self._form_container.locator("#classical")
@@ -32,10 +35,12 @@ class NewProjectsPage:
         expect(self.page.get_by_text("New Project")).to_be_visible()
         return self
 
+    @allure.step
     def fill_project_title(self, target_project_name: str) -> Self:
         self._form_container.locator("#project_title").fill(target_project_name)
         return self
 
+    @allure.step
     def click_create(self) -> ProjectPage:
         from .project_page import ProjectPage
 

@@ -1,5 +1,6 @@
 from typing import Self
 
+import allure
 from playwright.sync_api import Page, expect
 
 
@@ -23,34 +24,42 @@ class ProjectsPageHeader:
         self.grid_view_button = page.locator("#grid-view")
         self.table_view_button = page.locator("#table-view")
 
+    @allure.step
     def select_company(self, company_name: str) -> Self:
         self.company_selector.select_option(label=company_name)
         return self
 
+    @allure.step
     def search_project(self, query: str) -> Self:
         self.search_input.fill(query)
         return self
 
+    @allure.step
     def click_create(self) -> Self:
         self.create_button.click()
         return self
 
+    @allure.step
     def click_manage(self) -> Self:
         self.manage_button.click()
         return self
 
+    @allure.step
     def switch_to_grid_view(self) -> Self:
         self.grid_view_button.click()
         return self
 
+    @allure.step
     def switch_to_table_view(self) -> Self:
         self.table_view_button.click()
         return self
 
+    @allure.step
     def check_selected_company(self, expected_value: str) -> Self:
         expect(self.company_selector.locator("option[selected]")).to_have_text(expected_value)
         return self
 
+    @allure.step
     def plan_name_should_be(self, expected_value: str) -> Self:
         expect(self.plan_badge.locator("span").last).to_have_text(expected_value)
         return self

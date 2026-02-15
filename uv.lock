@@ -702,7 +702,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "allure-pytest", specifier = ">=2.13.5" },
+    { name = "allure-pytest", specifier = ">=2.15.3" },
     { name = "faker", specifier = ">=37.12.0" },
     { name = "playwright", specifier = ">=1.55.0" },
     { name = "pydantic", specifier = ">=2.12.5" },

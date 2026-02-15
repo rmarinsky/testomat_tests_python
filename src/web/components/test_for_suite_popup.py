@@ -1,3 +1,4 @@
+import allure
 from playwright.sync_api import Page, expect
 
 
@@ -6,11 +7,13 @@ class TestForSuitePopup:
         self.page = page
         self.suite_checkboxes = page.locator(".tree-branch input")
 
+    @allure.step
     def is_loaded(self) -> TestForSuitePopup:
         expect(self.page.get_by_role("heading", name="Select suite for test")).to_be_visible()
         expect(self.suite_checkboxes.first).to_be_visible()
         return self
 
+    @allure.step
     def select_first_suite(self) -> TestForSuitePopup:
         self.suite_checkboxes.first.click()
         self.page.get_by_role("button", name="Select").click()

@@ -1,5 +1,6 @@
 from typing import Self
 
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -31,20 +32,25 @@ class LoginPageV2(BasePage):
     def success_message(self) -> WebElement:
         return self.driver.find_element(By.CSS_SELECTOR, "#content-desktop .common-flash-success")
 
+    @allure.step
     def email_input_visible(self) -> WebElement:
         return self.wait.for_visible((By.CSS_SELECTOR, "#content-desktop #user_email"))
 
+    @allure.step
     def sign_in_button_clickable(self) -> WebElement:
         return self.wait.for_clickable((By.CSS_SELECTOR, "#content-desktop [value='Sign In']"))
 
+    @allure.step
     def open(self, base_url: str = "") -> Self:
         self.driver.get(f"{base_url}/users/sign_in")
         return self
 
+    @allure.step
     def is_loaded(self) -> Self:
         self.email_input_visible()
         return self
 
+    @allure.step
     def login(self, email: str, password: str, remember_me: bool = False) -> Self:
         self.email_input.clear()
         self.email_input.send_keys(email)
@@ -57,6 +63,7 @@ class LoginPageV2(BasePage):
 
         return self
 
+    @allure.step
     def should_see_success_message(self) -> Self:
         self.wait.for_visible((By.CSS_SELECTOR, "#content-desktop .common-flash-success"))
         return self

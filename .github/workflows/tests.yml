@@ -65,14 +65,6 @@ jobs:
           TESTOMAT_TOKEN: ${{ secrets.TESTOMAT_TOKEN }}
         run: uv run pytest -m smoke
 
-      - name: Upload HTML report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: smoke-html-report
-          path: test-result/report.html
-          retention-days: 14
-
       - name: Upload Allure results
         if: always()
         uses: actions/upload-artifact@v4
@@ -91,7 +83,7 @@ jobs:
 
   regression-tests:
     runs-on: ubuntu-latest
-    needs: [smoke-tests]
+    needs: [ smoke-tests ]
     if: >
       always() && (
         (github.event_name == 'schedule' && needs.smoke-tests.result == 'success') ||
@@ -117,14 +109,6 @@ jobs:
           TESTOMAT_TOKEN: ${{ secrets.TESTOMAT_TOKEN }}
         run: uv run pytest -m regression
 
-      - name: Upload HTML report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: regression-html-report
-          path: test-result/report.html
-          retention-days: 14
-
       - name: Upload Allure results
         if: always()
         uses: actions/upload-artifact@v4
@@ -143,26 +127,12 @@ jobs:
 
   publish-report:
     runs-on: ubuntu-latest
-    needs: [smoke-tests, regression-tests]
+    needs: [ smoke-tests, regression-tests ]
     if: always() && (needs.smoke-tests.result != 'skipped' || needs.regression-tests.result != 'skipped')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Download smoke HTML report
-        if: needs.smoke-tests.result != 'skipped'
-        uses: actions/download-artifact@v4
-        with:
-          name: smoke-html-report
-          path: report/smoke
-
-      - name: Download regression HTML report
-        if: needs.regression-tests.result != 'skipped'
-        uses: actions/download-artifact@v4
-        with:
-          name: regression-html-report
-          path: report/regression
-
       - name: Download smoke Allure results
         if: needs.smoke-tests.result != 'skipped'
         uses: actions/download-artifact@v4
@@ -179,8 +149,8 @@ jobs:
 
       - name: Install Allure CLI
         run: |
-          curl -sL https://github.com/allure-framework/allure2/releases/download/2.32.2/allure-2.32.2.tgz | tar -xz
-          echo "$PWD/allure-2.32.2/bin" >> $GITHUB_PATH
+          curl -sL https://github.com/allure-framework/allure2/releases/download/2.36.0/allure-2.36.0.tgz | tar -xz
+          echo "$PWD/allure-2.36.0/bin" >> $GITHUB_PATH
 
       - name: Generate Allure reports
         run: |
