@@ -182,3 +182,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        run: echo "https://rmarinsky.github.io/testomat_tests_python/allure/smoke"
