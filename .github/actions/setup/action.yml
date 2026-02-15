@@ -1,5 +1,5 @@
 name: 'Setup Python environment'
-description: 'Checkout, install uv, Python, and project dependencies'
+description: 'Install uv, Python, and project dependencies. Requires actions/checkout before this action.'
 
 inputs:
   install-playwright:
@@ -10,9 +10,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
     - name: Setup uv
       uses: astral-sh/setup-uv@v5
       with:
