@@ -170,6 +170,7 @@ jobs:
           if [ -f report/regression/report.html ]; then
             cp report/regression/report.html pages/regression.html
           fi
+          echo "https://rmarinsky.github.io/testomat_tests_python/allure/smoke"
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -182,4 +183,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        run: echo "https://rmarinsky.github.io/testomat_tests_python/allure/smoke"
